@@ -9,6 +9,8 @@ namespace Dungeon
         static void Main(string[] args)
         {
             var myWorld = new World(new Adventurer(new Maze()));
+            myWorld.Maze.CreateExit();
+
             Console.WriteLine("World created!");
 
             DisplayCommands();
@@ -26,6 +28,8 @@ namespace Dungeon
                     var result = myWorld.ExecuteActions(out string message);
                     if (!string.IsNullOrEmpty(message))
                         Console.WriteLine(message);
+                    if (!result)
+                        break;
                 }
                 DisplayMaze(myWorld.Maze, myWorld.Adventurer);
                 Console.WriteLine("Enter more commands to continue moving: ");

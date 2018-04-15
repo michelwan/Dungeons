@@ -1,4 +1,5 @@
 ﻿using Dungeon.Generic;
+using Dungeon.Helper;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,6 +9,7 @@ namespace Dungeon
     {
         public Size Bounds { get; protected set; }
         public Point CenterOfDungeons { get; protected set; }
+        public Point EscapeGate { get; private set; }
 
         private readonly List<IObstacle> _obstacles;
         public IReadOnlyList<IObstacle> Obstacles { get { return _obstacles; } }
@@ -53,7 +55,11 @@ namespace Dungeon
                 message = GetObstacle(newDestination).GetType().Name.ToString();
                 return from;
             }
-            message = string.Empty;
+
+            if (IsEscapeGate(newDestination))
+                message = Constants.ExitFound;
+            else
+                message = string.Empty;
 
             return newDestination;
         }
@@ -86,6 +92,37 @@ namespace Dungeon
             if (_obstacles.Any(x => x.Location.Equals(point)))
                 return _obstacles.Single(x => x.Location.Equals(point));
             return null;
+        }
+
+        public void CreateExit()
+        {
+            for (var x = 1; x < Bounds.Width - 1; x++)
+                if (!_obstacles.Any(o => o.Location.X == x && o.Location.Y == 1)
+                 && !_obstacles.Any(o => o.Location.X == x - 1 && o.Location.Y == 1)
+                 && !_obstacles.Any(o => o.Location.X == x + 1 && o.Location.Y == 1)
+                 && !_obstacles.Any(o => o.Location.X == x && o.Location.Y == 2))
+                {
+                    _obstacles.Remove(_obstacles.Single(o => o.Location.X == x && o.Location.Y == 0));
+                    EscapeGate = new Point(x, 0);
+                    return;
+                }
+
+            //if fail to create a escape gate, we remove obstacles
+            for (var y = 1; y < 4; y++)
+                if (_obstacles.Any(o => o.Location.X == CenterOfDungeons.X && o.Location.Y == y))
+                    RemoveObstacle(_obstacles.Single(o => o.Location.X == CenterOfDungeons.X && o.Location.Y == y));
+
+            EscapeGate = new Point(CenterOfDungeons.X, 0);
+        }
+
+        public void RemoveObstacle(IObstacle obstacle)
+        {
+            _obstacles.Remove(obstacle);
+        }
+
+        public bool IsEscapeGate(Point point)
+        {
+            return EscapeGate.Equals(point);
         }
     }
 }

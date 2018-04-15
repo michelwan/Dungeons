@@ -34,6 +34,5 @@ namespace Dungeon
                 return (X * 397) ^ Y;
             }
         }
-
     }
 }

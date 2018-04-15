@@ -1,6 +1,7 @@
 ﻿using Dungeon.Command;
 using Dungeon.Enumeration;
 using Dungeon.Generic;
+using Dungeon.Helper;
 using System;
 using System.Collections.Generic;
 
@@ -59,7 +60,9 @@ namespace Dungeon
         public bool ExecuteActions(out string message)
         {
             var result = _programmer.ExecuteCommands(out message);
-            return result;
+            if (message == Constants.ExitFound)
+                return false;
+            return true;
         }
     }
 }

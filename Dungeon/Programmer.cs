@@ -1,4 +1,5 @@
 ﻿using Dungeon.Generic;
+using Dungeon.Helper;
 using System.Collections.Generic;
 
 namespace Dungeon
@@ -22,6 +23,11 @@ namespace Dungeon
             foreach (var command in Commands)
             {
                 var success = command.Execute(out string commandMessage);
+                if (commandMessage == Constants.ExitFound)
+                {
+                    message = Constants.ExitFound;
+                    return false;
+                }
                 if (!success)
                 {
                     message = commandMessage;
