@@ -1,5 +1,6 @@
 ﻿using Dungeon.Enumeration;
 using System;
+using System.Linq;
 
 namespace Dungeon
 {
@@ -20,13 +21,13 @@ namespace Dungeon
                 else
                 {
                     var commandMessage = myWorld.AcceptCommands(input);
-                    if (!string.IsNullOrEmpty(commandMessage))
-                        Console.WriteLine(commandMessage);
+                    if (!commandMessage)
+                        Console.WriteLine("Wrong command");
                     var result = myWorld.ExecuteActions(out string message);
                     if (!string.IsNullOrEmpty(message))
                         Console.WriteLine(message);
                 }
-                DisplayDungeons(myWorld.Dungeons, myWorld.Adventurer);
+                DisplayMaze(myWorld.Maze, myWorld.Adventurer);
                 Console.WriteLine("Enter more commands to continue moving: ");
                 input = Console.ReadLine();
             }
@@ -46,16 +47,27 @@ namespace Dungeon
             Console.WriteLine($"{CommandEnum.h.ToString()}: Help");
         }
 
-        private static void DisplayDungeons(Maze dungeons, Adventurer adventurer)
+        private static void DisplayMaze(Maze maze, Adventurer adventurer)
         {
-            for (var y = 0; y < dungeons.Bounds.Height; y++)
+            for (var y = 0; y < maze.Bounds.Height; y++)
             {
-                for (var x = 0; x < dungeons.Bounds.Width; x++)
+                for (var x = 0; x < maze.Bounds.Width; x++)
                 {
                     if (adventurer.Location.X == x && adventurer.Location.Y == y)
+                    {
                         Console.Write("A");
+                    }
+                    else if (maze.Obstacles.Any(o => o.Location.X == x && o.Location.Y == y))
+                    {
+                        if (maze.Obstacles.Single(o => o.Location.X == x && o.Location.Y == y).GetType() == typeof(Wall))
+                            Console.Write("█");
+                        else
+                            Console.Write("O");
+                    }
                     else
+                    {
                         Console.Write("-");
+                    }
                 }
                 Console.WriteLine();
             }

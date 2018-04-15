@@ -11,16 +11,16 @@ namespace Dungeon
         private readonly Programmer _programmer;
 
         public Adventurer Adventurer { get; private set; }
-        public Maze Dungeons { get; private set; }
+        public Maze Maze { get; private set; }
 
         public World(Adventurer adventurer)
         {
             Adventurer = adventurer;
-            Dungeons = adventurer.Dungeons;
+            Maze = adventurer.Dungeons;
             _programmer = new Programmer();
         }
 
-        public string AcceptCommands(String commandString)
+        public bool AcceptCommands(String commandString)
         {
             _programmer.Commands = new List<ICommand>();
 
@@ -29,7 +29,7 @@ namespace Dungeon
             foreach (Char command in commands)
                 success = AcceptCommand(success, command);
 
-            return success ? String.Empty : "The adventurer look around him to kill time...";
+            return success;
         }
 
         private bool AcceptCommand(bool success, Char command)

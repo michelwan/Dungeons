@@ -1,6 +1,8 @@
-﻿namespace Dungeon
+﻿using System;
+
+namespace Dungeon
 {
-    public class Point
+    public class Point : IEquatable<Point>
     {
         public int X { get; protected set; }
         public int Y { get; protected set; }
@@ -15,5 +17,23 @@
         {
             return new Point(p1.X + p2.X, p1.Y + p2.Y);
         }
+
+        public bool Equals(Point other)
+        {
+            if (other is null)
+                return false;
+            if (ReferenceEquals(this, other))
+                return true;
+            return X == other.X && Y == other.Y;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (X * 397) ^ Y;
+            }
+        }
+
     }
 }
