@@ -1,5 +1,4 @@
 ﻿using Dungeon.Enumeration;
-using System;
 using System.Collections.Generic;
 
 namespace Dungeon.Generic
@@ -45,7 +44,19 @@ namespace Dungeon.Generic
 
         private bool Move(DirectionEnum direction, out string message)
         {
-            throw new NotImplementedException();
+            var desiredPosition = CreateDesiredPosition(direction);
+            var newLocation = Dungeons.CalculateFinalPosition(Location, desiredPosition, out message);
+
+            var success = Location != newLocation;
+
+            Location = newLocation;
+
+            return success;
+        }
+
+        private Point CreateDesiredPosition(DirectionEnum direction)
+        {
+            return Location + PositionalAdjustments[direction];
         }
     }
 }

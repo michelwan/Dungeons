@@ -19,7 +19,12 @@ namespace Dungeon
                     DisplayCommands();
                 else
                 {
-                    Console.WriteLine("Do something");
+                    var commandMessage = myWorld.AcceptCommands(input);
+                    if (!string.IsNullOrEmpty(commandMessage))
+                        Console.WriteLine(commandMessage);
+                    var result = myWorld.ExecuteActions(out string message);
+                    if (!string.IsNullOrEmpty(message))
+                        Console.WriteLine(message);
                 }
                 DisplayDungeons(myWorld.Dungeons, myWorld.Adventurer);
                 Console.WriteLine("Enter more commands to continue moving: ");

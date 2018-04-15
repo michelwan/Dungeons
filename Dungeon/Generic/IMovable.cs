@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Dungeon.Generic
+﻿namespace Dungeon.Generic
 {
     public interface IMovable
     {
