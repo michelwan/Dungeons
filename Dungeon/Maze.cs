@@ -8,7 +8,7 @@ namespace Dungeon
     public class Maze
     {
         public Size Bounds { get; protected set; }
-        public Point CenterOfDungeons { get; protected set; }
+        public Point CenterOfMaze { get; protected set; }
         public Point EscapeGate { get; private set; }
 
         private readonly List<IObstacle> _obstacles;
@@ -19,7 +19,7 @@ namespace Dungeon
         public Maze(Size bounds)
         {
             Bounds = bounds;
-            CenterOfDungeons = new Point(Bounds.Width / 2, Bounds.Height / 2);
+            CenterOfMaze = new Point(Bounds.Width / 2, Bounds.Height / 2);
             _obstacles = new List<IObstacle>();
             InitBorder();
         }
@@ -109,10 +109,10 @@ namespace Dungeon
 
             //if fail to create a escape gate, we remove obstacles
             for (var y = 1; y < 4; y++)
-                if (_obstacles.Any(o => o.Location.X == CenterOfDungeons.X && o.Location.Y == y))
-                    RemoveObstacle(_obstacles.Single(o => o.Location.X == CenterOfDungeons.X && o.Location.Y == y));
+                if (_obstacles.Any(o => o.Location.X == CenterOfMaze.X && o.Location.Y == y))
+                    RemoveObstacle(_obstacles.Single(o => o.Location.X == CenterOfMaze.X && o.Location.Y == y));
 
-            EscapeGate = new Point(CenterOfDungeons.X, 0);
+            EscapeGate = new Point(CenterOfMaze.X, 0);
         }
 
         public void RemoveObstacle(IObstacle obstacle)
