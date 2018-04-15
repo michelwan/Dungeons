@@ -4,6 +4,7 @@ using Dungeon.Generic;
 using Dungeon.Helper;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Dungeon
 {
@@ -18,6 +19,7 @@ namespace Dungeon
         {
             Adventurer = adventurer;
             Maze = adventurer.Dungeons;
+            AddRandomObstacles();
             _programmer = new Programmer();
         }
 
@@ -63,6 +65,37 @@ namespace Dungeon
             if (message == Constants.ExitFound)
                 return false;
             return true;
+        }
+
+        public void AddObstacles(Dictionary<Point, Type> obstacles)
+        {
+            if (obstacles.Any(o => o.Key.X == Adventurer.Location.X && o.Key.Y == Adventurer.Location.Y))
+                obstacles.Remove(Adventurer.Location);
+            foreach (var obstacle in obstacles)
+                Maze.AddObstacle(CreateObstacle(obstacle.Key, obstacle.Value));
+        }
+
+        private void AddRandomObstacles(int nbObstacles = 200)
+        {
+            var random = new Random();
+            for (var nbObstacle = 0; nbObstacle < nbObstacles; nbObstacle++)
+            {
+                var x = random.Next(Maze.Bounds.Width);
+                var y = random.Next(Maze.Bounds.Height);
+                //Check if no obstacle already on this point
+                if (!Maze.Obstacles.Any(o => o.Location.X == x && o.Location.Y == y))
+                    //Check if no obstacles before on x or y
+                    if (!Maze.Obstacles.Any(o => (o.Location.X == x - 1 && o.Location.Y == y) && (o.Location.X == x && o.Location.Y == y - 1)))
+                        Maze.AddObstacle(new Wall(new Point(x, y)));
+            }
+        }
+
+        private IObstacle CreateObstacle(Point location, Type type)
+        {
+            if (type == typeof(Wall))
+                return new Wall(location);
+            else
+                return null;
         }
     }
 }
