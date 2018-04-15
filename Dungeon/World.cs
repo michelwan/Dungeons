@@ -62,17 +62,9 @@ namespace Dungeon
         public bool ExecuteActions(out string message)
         {
             var result = _programmer.ExecuteCommands(out message);
-            if (message == Constants.ExitFound)
+            if (message == Constants.ExitFound || message == typeof(Monster).Name.ToString())
                 return false;
             return true;
-        }
-
-        public void AddObstacles(Dictionary<Point, Type> obstacles)
-        {
-            if (obstacles.Any(o => o.Key.X == Adventurer.Location.X && o.Key.Y == Adventurer.Location.Y))
-                obstacles.Remove(Adventurer.Location);
-            foreach (var obstacle in obstacles)
-                Maze.AddObstacle(CreateObstacle(obstacle.Key, obstacle.Value));
         }
 
         private void AddRandomObstacles(int nbObstacles = 200)
@@ -82,11 +74,13 @@ namespace Dungeon
             {
                 var x = random.Next(Maze.Bounds.Width);
                 var y = random.Next(Maze.Bounds.Height);
+                if (Adventurer.Location.X == x && Adventurer.Location.Y == y)
+                    continue;
                 //Check if no obstacle already on this point
-                if (!Maze.Obstacles.Any(o => o.Location.X == x && o.Location.Y == y))
-                    //Check if no obstacles before on x or y
-                    if (!Maze.Obstacles.Any(o => (o.Location.X == x - 1 && o.Location.Y == y) && (o.Location.X == x && o.Location.Y == y - 1)))
-                        Maze.AddObstacle(new Wall(new Point(x, y)));
+                //Check if no obstacles before on x or y
+                if (!Maze.Obstacles.Any(o => o.Location.X == x && o.Location.Y == y)
+                && !Maze.Obstacles.Any(o => (o.Location.X == x - 1 && o.Location.Y == y) && (o.Location.X == x && o.Location.Y == y - 1)))
+                    Maze.AddObstacle(CreateObstacle(new Point(x, y), random.Next(100) < 20 ? typeof(Monster) : typeof(Wall)));
             }
         }
 
@@ -94,6 +88,8 @@ namespace Dungeon
         {
             if (type == typeof(Wall))
                 return new Wall(location);
+            else if (type == typeof(Monster))
+                return new Monster(location);
             else
                 return null;
         }
