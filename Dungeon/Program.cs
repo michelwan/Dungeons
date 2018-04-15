@@ -68,7 +68,7 @@ namespace Dungeon
                         else if (maze.Obstacles.Single(o => o.Location.X == x && o.Location.Y == y).GetType() == typeof(Monster))
                             Console.Write("¥");
                         else
-                            Console.Write("O");
+                            Console.Write("?");
                     }
                     else
                     {
